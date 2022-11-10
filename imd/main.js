@@ -104,7 +104,7 @@ function runMatter() {
     let s =
       Common.random() > 0.6 ? Common.random(10, 80) : Common.random(4, 60);
     let poligonNumber = Common.random(3, 8);
-    //다각형
+    //다각형ㄷ
     var body = Bodies.polygon(
       x,
       y,
