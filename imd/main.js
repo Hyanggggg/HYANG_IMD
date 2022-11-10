@@ -19,16 +19,19 @@ function runMatter() {
     Common = Matter.Common,
     Composite = Matter.Composite,
     Composites = Matter.Composites,
-    Bodies = Matter.Bodies;
+    Constraint = Matter.Constraint,
+    MouseConstraint = Matter.MouseConstraint;
+  Bodies = Matter.Bodies;
 
-  // create engine
-  var engine = Engine.create();
+  // engine
+  var engine = Engine.create(),
+    world = engine.world;
 
   engine.world.gravity.y = 0;
   engine.world.gravity.x = 0;
   engine.world.gravity.scale = 0.1;
 
-  // create renderer
+  //  renderer
   var render = Render.create({
     element: canvas,
     engine: engine,
@@ -41,51 +44,67 @@ function runMatter() {
     },
   });
 
-  // create runner
+  Render.run(render);
+  // runner
   var runner = Runner.create();
+  Runner.run(runner, engine);
 
-  // Runner.run(runner, engine);
-  // Render.run(render);
-
-  // create demo scene
   var world = engine.world;
   world.gravity.scale = 0;
-
-  // create a body with an attractor
-  var attractiveBody = Bodies.circle(
-    render.options.width / 2,
-    render.options.height / 2,
-    Math.max(dimensions.width / 4, dimensions.height / 4) / 2,
-    {
-      render: {
-        fillStyle: `rgb(240,240,240)`,
-        strokeStyle: `rgb(240,240,240)`,
-        lineWidth: 0,
+  // 마우스
+  var mouse = Mouse.create(render.canvas),
+    mouseConstraint = MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false,
+        },
       },
+    });
+  World.add(world, mouseConstraint);
+  //핑쿠
+  (rockOptions = {
+    density: 0.005,
+    render: {
+      fillStyle: `#F469FF`,
+      strokeStyle: `#EF5AFF`,
+      lineWidth: 0,
+    },
+    plugin: {
+      attractors: [
+        function (bodyA, bodyB) {
+          return {
+            x: (bodyA.position.x - bodyB.position.x) * 1e-6,
+            y: (bodyA.position.y - bodyB.position.y) * 1e-6,
+          };
+        },
+      ],
+    },
+  }),
+    (rock = Bodies.polygon(
+      $(window).width() / 2,
+      $(window).height() / 2,
+      8,
+      70,
+      rockOptions
+    )),
+    (anchor = { x: $(window).width() / 2, y: $(window).height() / 2 }),
+    (elastic = Constraint.create({
+      pointA: anchor,
+      bodyB: rock,
+      stiffness: 0.02,
+    }));
+  World.add(world, rock);
+  World.add(world, elastic);
 
-      isStatic: true,
-      plugin: {
-        attractors: [
-          function (bodyA, bodyB) {
-            return {
-              x: (bodyA.position.x - bodyB.position.x) * 1e-6,
-              y: (bodyA.position.y - bodyB.position.y) * 1e-6,
-            };
-          },
-        ],
-      },
-    }
-  );
-
-  World.add(world, attractiveBody);
-
-  // add some bodies that to be attracted
-  for (var i = 0; i < 60; i += 1) {
+  for (var i = 0; i < 90; i += 1) {
     let x = Common.random(0, render.options.width);
     let y = Common.random(0, render.options.height);
     let s =
       Common.random() > 0.6 ? Common.random(10, 80) : Common.random(4, 60);
-    let poligonNumber = Common.random(3, 6);
+    let poligonNumber = Common.random(3, 8);
+    //다각형
     var body = Bodies.polygon(
       x,
       y,
@@ -96,51 +115,50 @@ function runMatter() {
         mass: s / 80,
         friction: 0,
         frictionAir: 0.02,
+
         angle: Math.round(Math.random() * 360),
         render: {
           fillStyle: "#FFFFFF",
-          strokeStyle: `#DDDDDD`,
+          strokeStyle: `#2FFC61`,
           lineWidth: 2,
         },
       }
     );
 
     World.add(world, body);
-
+    //초록
     let r = Common.random(0, 4);
-    var circle = Bodies.circle(x, y, Common.random(2, 8), {
-      mass: 0.1,
-      friction: 0,
-      frictionAir: 0.01,
+    var circle = Bodies.circle(x, y, Common.random(2, 30), {
+      mass: 0.2,
       render: {
-        fillStyle: r > 0.3 ? `#FF2D6A` : `rgb(240,240,240)`,
-        strokeStyle: `#E9202E`,
-        lineWidth: 2,
+        fillStyle: r > 2 ? `#2FFC61` : `rgb(240,240,240)`,
+        strokeStyle: `#00FF36F`,
+        lineWidth: 3,
       },
     });
 
     World.add(world, circle);
-
-    var circle = Bodies.circle(x, y, Common.random(2, 20), {
-      mass: 6,
+    //파랑
+    var circle = Bodies.circle(x, y, Common.random(2, 40), {
+      mass: 0.5,
       friction: 0,
       frictionAir: 0,
       render: {
-        fillStyle: r > 0.3 ? `#4267F8` : `rgb(240,240,240)`,
-        strokeStyle: `#3257E8`,
-        lineWidth: 4,
+        fillStyle: r > 1 ? `#2727FF` : `rgb(240,240,240)`,
+        strokeStyle: `#4A4AFF`,
+        lineWidth: 5,
       },
     });
 
     World.add(world, circle);
-
-    var circle = Bodies.circle(x, y, Common.random(2, 30), {
-      mass: 0.2,
+    //회색
+    var circle = Bodies.circle(x, y, Common.random(2, 50), {
+      mass: 0.8,
       friction: 0.6,
-      frictionAir: 0.8,
+      frictionAir: 0.6,
       render: {
         fillStyle: `rgb(240,240,240)`,
-        strokeStyle: `#FFFFFF`,
+        strokeStyle: `#F6B6FF`,
         lineWidth: 3,
       },
     });
@@ -148,19 +166,6 @@ function runMatter() {
     World.add(world, circle);
   }
 
-  // add mouse control
-  var mouse = Mouse.create(render.canvas);
-
-  Events.on(engine, "afterUpdate", function () {
-    if (!mouse.position.x) return;
-    // smoothly move the attractor body towards the mouse
-    Body.translate(attractiveBody, {
-      x: (mouse.position.x - attractiveBody.position.x) * 0.12,
-      y: (mouse.position.y - attractiveBody.position.y) * 0.12,
-    });
-  });
-
-  // return a context for MatterDemo to control
   let data = {
     engine: engine,
     runner: runner,
