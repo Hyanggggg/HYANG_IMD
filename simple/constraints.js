@@ -11,18 +11,18 @@ Matter.use("matter-attractors");
 Matter.use("matter-wrap");
 
 var Engine = Matter.Engine,
-    Events = Matter.Events,
-    Runner = Matter.Runner,
-    Render = Matter.Render,
-    World = Matter.World,
-    Body = Matter.Body,
-    Mouse = Matter.Mouse,
-    Common = Matter.Common,
-    Composite = Matter.Composite,
-    Composites = Matter.Composites,
-    Constraint = Matter.Constraint, //가져온거
-    MouseConstraint = Matter.MouseConstraint; //가져온거
-    Bodies = Matter.Bodies;
+  Events = Matter.Events,
+  Runner = Matter.Runner,
+  Render = Matter.Render,
+  World = Matter.World,
+  Body = Matter.Body,
+  Mouse = Matter.Mouse,
+  Common = Matter.Common,
+  Composite = Matter.Composite,
+  Composites = Matter.Composites,
+  Constraint = Matter.Constraint, //가져온거
+  MouseConstraint = Matter.MouseConstraint; //가져온거
+Bodies = Matter.Bodies;
 // create engine
 let engine;
 
@@ -78,20 +78,21 @@ function setup() {
   //     background: "rgb(240,240,240)",
   //   },
   // });
-  
 
   walls = createWalls(70);
-  
+
   Matter.use("matter-attractors");
   Matter.use("matter-wrap");
-  
-  let rockOptions = { density: 0.005,
+
+  let rockOptions = {
+    density: 0.005,
     // render: {
     //   fillStyle: `#F469FF`,
     //   strokeStyle: `#EF5AFF`,
     //   lineWidth: 0,
     // },
-    plugin: {//달라붙는거
+    plugin: {
+      //달라붙는거
       attractors: [
         function (bodyA, bodyB) {
           return {
@@ -101,12 +102,14 @@ function setup() {
         },
       ],
     },
-  }//무게감
+  }; //무게감
   // add damped soft global constraint
-  let bodyx = new P5Polygon(width/2, height/2, 8, 140, rockOptions).setFillColor("#F469FF").setStrokeColor("#EF5AFF");
+  let bodyx = new P5Polygon(width / 2, height / 2, 8, 140, rockOptions)
+    .setFillColor("#F469FF")
+    .setStrokeColor("#EF5AFF");
   matterBodies.push(bodyx);
   let constraint2 = new P5Constraint({
-    pointA: { x: width/2, y: height/2 },
+    pointA: { x: width / 2, y: height / 2 },
     bodyB: bodyx.getBody(),
     stiffness: 0.01,
     damping: 0.01,
@@ -121,46 +124,52 @@ function setup() {
     let poligonNumber = Common.random(3, 8);
     //다각형
 
-    let body2 = new P5Polygon(x, y, poligonNumber, s,
-      {
-        mass: s / 80,
-        friction: 0,
-        frictionAir: 0.02,
-        //
-        angle: Math.round(Math.random() * 360),
-        
-        render:{
-          lineWidth: 10,
-          
-        }
-      }).setFillColor("#FFFFFF").setStrokeColor("#2FFC61");
+    let body2 = new P5Polygon(x, y, poligonNumber, s, {
+      mass: s / 80,
+      friction: 0,
+      frictionAir: 0.02,
+      //
+      angle: Math.round(Math.random() * 360),
+
+      render: {
+        lineWidth: 10,
+      },
+    })
+      .setFillColor("#FFFFFF")
+      .setStrokeColor("#2FFC61");
     matterBodies.push(body2);
 
     let r = Common.random(0, 4);
     let body3 = new P5Circle(x, y, Common.random(2, 30), {
       //원에 가까이
       mass: 0.2,
-    }).setFillColor( r > 2 ? "#2FFC61" : "rgb(240,240,240)").setStrokeColor("#00FF36F");
+    })
+      .setFillColor(r > 2 ? "#2FFC61" : "rgb(240,240,240)")
+      .setStrokeColor("#00FF36F");
     matterBodies.push(body3);
 
     let body4 = new P5Circle(x, y, Common.random(2, 40), {
       mass: 0.5,
       friction: 0,
       frictionAir: 0,
-    }).setFillColor(r > 1 ? "#2727FF" : "rgb(240,240,240)").setStrokeColor("#4A4AFF");
+    })
+      .setFillColor(r > 1 ? "#2727FF" : "rgb(240,240,240)")
+      .setStrokeColor("#4A4AFF");
     matterBodies.push(body4);
-
 
     let body5 = new P5Circle(x, y, Common.random(2, 40), {
       mass: 0.5,
       friction: 0,
       frictionAir: 0,
-    }).setFillColor("rgb(240,240,240)").setStrokeColor("#F6B6FF");
+    })
+      .setFillColor("rgb(240,240,240)")
+      .setStrokeColor("#F6B6FF");
     matterBodies.push(body5);
-  
   }
   // add damped soft global constraint
-  let body7A = new P5Polygon(500, 400, 6, 30).setFillColor("#ffffff").setStrokeColor("#FFFB69");
+  let body7A = new P5Polygon(500, 400, 6, 30)
+    .setFillColor("#ffffff")
+    .setStrokeColor("#FFFB69");
   let body7B = new P5Polygon(600, 400, 7, 60).setFillColor("#FFFB69");
   matterBodies.push(body7A);
   matterBodies.push(body7B);
@@ -174,8 +183,12 @@ function setup() {
   });
   matterConstraints.push(constraint7);
 
-  let body8A = new P5Polygon(1400, 1000,5, 30).setFillColor("#ffffff").setStrokeColor("#FFFB69");
-  let body8B = new P5Polygon(1600, 1000, 3, 60).setFillColor("#FFFB69");
+  let body8A = new P5Polygon(width / 2 + 100, 400, 5, 30)
+    .setFillColor("#ffffff")
+    .setStrokeColor("#FFFB69");
+  let body8B = new P5Polygon(width / 2 + 300, 400, 3, 60).setFillColor(
+    "#FFFB69"
+  );
   matterBodies.push(body8A);
   matterBodies.push(body8B);
   let constraint8 = new P5Constraint({
@@ -224,12 +237,9 @@ function setup() {
   // Matter.Runner.run(runner, engine);
   // Matter.Render.run(render);
   // return data;
-
 }
 
-
 function draw() {
-
   Matter.use("matter-attractors");
   Matter.use("matter-wrap");
 
