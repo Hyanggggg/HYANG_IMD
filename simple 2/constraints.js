@@ -52,9 +52,9 @@ function setup() {
   canvas.parent("sketch");
   engine = Engine.create();
   world = engine.world;
-  engine.world.gravity.y = 0;
+  engine.world.gravity.y = -0.001;
   engine.world.gravity.x = 0;
-  engine.world.gravity.scale = 0.1;
+  engine.world.gravity.scale = 0.9;
 
   walls = createWalls(70);
 
@@ -65,6 +65,7 @@ function setup() {
     density: 0.005,
 
     plugin: {
+      //달라붙는거
       attractors: [
         function (bodyA, bodyB) {
           return {
@@ -74,8 +75,7 @@ function setup() {
         },
       ],
     },
-  };
-  // add damped soft global constraint
+  }; //무게감
   let bodyx = new P5Polygon(width / 2, height / 2, 8, 130, rockOptions)
     .setFillColor("#F469FF")
     .setStrokeColor("#EF5AFF");
@@ -138,7 +138,6 @@ function setup() {
       .setStrokeColor("#F6B6FF");
     matterBodies.push(body5);
   }
-  // add damped soft global constraint
   let body7A = new P5Polygon(500, 400, 6, 30)
     .setFillColor("#ffffff")
     .setStrokeColor("#FFFB69");
