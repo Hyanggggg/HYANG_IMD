@@ -3,7 +3,7 @@ let fadeInterval = 0.8;
 let symbolSize = 18;
 var video;
 var capture;
-var vScale = 11;
+var vScale = 10;
 function setup() {
   let canvas = createCanvas(680, 680);
   canvas.parent("p5Canvas");
