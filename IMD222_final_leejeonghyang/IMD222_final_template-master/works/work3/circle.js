@@ -19,7 +19,7 @@ function Circle(x, y, radius, hue) {
     strokeWeight(1);
     stroke(249, 255, 255);
     fill(201, 255, 0);
-    circle(0, 0, this.radius * 3);
+    circle(0, 0, this.radius * 2);
     pop();
   };
 }

@@ -27,7 +27,7 @@ let wallHeight;
 function setup() {
   let canvas = createCanvas(680, 680);
   canvas.parent("p5Canvas");
-  frameRate(30);
+  frameRate(20);
   engine = Engine.create();
   world = engine.world;
   Engine.run(engine);
@@ -35,7 +35,7 @@ function setup() {
   bowlWidth = 300;
   bowlHeight = 5;
   wallWidth = 5;
-  wallHeight = 50;
+  wallHeight = 15;
   bowlX = width / 2;
   bowlY = (height / 4) * 3.5;
 
@@ -168,7 +168,6 @@ function drawKeypoints() {
   if (poses.length > 0) {
     let pose = poses[0].pose;
     for (let j = 0; j < pose.keypoints.length; j++) {
-      // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let rightWrist = pose.keypoints.find(
         (keypoint) => keypoint.part === "rightWrist"
       );
@@ -180,9 +179,6 @@ function drawKeypoints() {
       let handHue = (rightWrist.position.x / width) * 360;
       let noseSize = height - rightWrist.position.y;
 
-      // draw with the nose
-      // use the right hand x position for hue
-      // use the right hand y position for size
       if (keypoint.score > 0.5 && keypoint.part == "nose") {
         graphics.fill(handHue, 100, 100);
         graphics.noStroke();
@@ -192,12 +188,10 @@ function drawKeypoints() {
   }
 }
 
-// A function to draw the skeletons
 function drawSkeleton() {
-  // Loop through all the skeletons detected
   for (let i = 0; i < poses.length; i++) {
     let skeleton = poses[i].skeleton;
-    // For every skeleton, loop through all body connections
+
     for (let j = 0; j < skeleton.length; j++) {
       let partA = skeleton[j][0];
       let partB = skeleton[j][1];
@@ -212,11 +206,10 @@ function drawSkeleton() {
   }
 }
 
-function Box(x, y, w, h, hue = 255) {
-  // options for a body
+function Box(x, y, w, h, hue = 200) {
   var options = {
     friction: 0.3,
-    restitution: 1,
+    restitution: 0.5,
     isStatic: true,
   };
   this.body = Bodies.rectangle(x, y, w, h, options);
@@ -225,12 +218,8 @@ function Box(x, y, w, h, hue = 255) {
   this.xPos = 0;
   this.yPos = 0;
   this.hue = hue;
-  // add the body to the world
   World.add(world, this.body);
 
-  // draw the body to the canvas
-  // using p5 and rotate, translate it
-  // to the right position/angle
   this.show = function () {
     var pos = this.body.position;
     var angle = this.body.angle;
